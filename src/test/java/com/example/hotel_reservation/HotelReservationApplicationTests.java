@@ -1,10 +1,10 @@
-package com.example.hoteltransylvania.hotel_transylvania;
+package com.example.hotel_reservation;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class HotelTransylvaniaApplicationTests {
+class HotelReservationApplicationTests {
 
 	@Test
 	void contextLoads() {
