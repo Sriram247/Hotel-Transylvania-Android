@@ -25,7 +25,7 @@ public class HotelController {
     }
 
     @QueryMapping
-    public Optional<Hotel> getHotelById(@Argument UUID id) {
+    public Optional<Hotel> getHotelById(@Argument Integer id) {
         return hotelService.findById(id);
     }
 
