@@ -1,5 +1,6 @@
 package com.example.hoteltransylvania
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -19,8 +20,6 @@ class HotelListActivity : ComponentActivity() {
     private val checkOut = intent.getStringExtra("checkOut") ?: ""
     private val guests = intent.getIntExtra("guests", 1)
 
-    // For hotel selection
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,6 +31,13 @@ class HotelListActivity : ComponentActivity() {
                     checkOut = checkOut,
                     guests = guests,
                     onHotelSelected = { hotel ->
+
+                        val intent = Intent(this, HotelListActivity::class.java)
+                        intent.putExtra("location", location)
+                        intent.putExtra("checkIn", checkIn)
+                        intent.putExtra("checkOut", checkOut)
+                        intent.putExtra("guests", guests)
+                        startActivity(intent)
                         Toast.makeText(this, "Selected hotel: ${hotel.name}", Toast.LENGTH_LONG).show()
                     }
                 )
