@@ -23,18 +23,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HotelTransylvaniaTheme() {
-                val context = LocalContext.current
-
                 HomeScreen { checkIn, checkOut, guests ->
                     // Save to Room (next step)
                     // Make GraphQL service call (later)
 
-                    val intent = Intent(context, HotelListActivity::class.java).apply {
-                        putExtra("checkIn", checkIn)
-                        putExtra("checkOut", checkOut)
-                        putExtra("guests", guests)
-                    }
-                    context.startActivity(intent)
+                    val intent = Intent(this, Class.forName("com.example.hoteltransylvania.ui.screens.HotelListActivity"))
+                    intent.putExtra("checkIn", checkIn)
+                    intent.putExtra("checkOut", checkOut)
+                    intent.putExtra("guests", guests)
+                    startActivity(intent)
+
                 }
             }
         }
