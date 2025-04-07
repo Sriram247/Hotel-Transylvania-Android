@@ -9,18 +9,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hoteltransylvania.ui.theme.HotelTransylvaniaTheme
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
 
 
 @Composable
@@ -28,10 +32,13 @@ fun HomeScreen(
     onSearchClick: (String, String, String, Int) -> Unit
 ) {
     var location by remember { mutableStateOf("") }
-    var guests by remember { mutableStateOf("") }
+    var rooms by remember { mutableIntStateOf(1) }
+    var adults by remember { mutableIntStateOf(2) }
+    var children by remember { mutableIntStateOf(0) }
     var selectedDate by remember { mutableStateOf<Pair<Long?, Long?>>(Pair(null, null)) }
 
     var showDatePicker by remember { mutableStateOf(false) }
+    var showGuestSheet by remember { mutableStateOf(false) }
 
 
     val context = LocalContext.current
@@ -68,18 +75,59 @@ fun HomeScreen(
             onShowDatePickerChange = { showDatePicker = it }
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { showGuestSheet = true }
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+                .padding(16.dp)
+        ) {
+            Text("$rooms Room • $adults Adults • $children Children")
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
         Button(
             onClick = {
-                val guestCount = guests.toIntOrNull() ?: 1
-                onSearchClick(location,selectedDate.first.toString(), selectedDate.second.toString(), guestCount)
+                val guestCount = adults + children
+                onSearchClick(location, selectedDate.first.toString(), selectedDate.second.toString(), guestCount)
+
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Search Hotels")
         }
     }
+
+    if (showGuestSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showGuestSheet = false },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            dragHandle = { BottomSheetDefaults.DragHandle() }
+        ) {
+            GuestPickerSheet(
+                rooms = rooms,
+                adults = adults,
+                children = children,
+                onValueChange = { newRooms, newAdults, newChildren ->
+                    rooms = newRooms
+                    adults = newAdults
+                    children = newChildren
+                    showGuestSheet = false
+                }
+            )
+        }
+    }
+
+
+}
+
+fun formatDate(millis: Long?): String {
+    return millis?.let {
+        val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+        sdf.format(Date(it))
+    } ?: ""
 }
 
 @Composable
@@ -90,8 +138,8 @@ fun DateRangePickerField(
     onShowDatePickerChange: (Boolean) -> Unit
 ) {
     // Format the Long? dates to a readable date format or placeholder
-    val checkInDate = selectedDateRange.first?.let { Date(it).toString() } ?: "Check-in"
-    val checkOutDate = selectedDateRange.second?.let { Date(it).toString() } ?: "Check-out"
+    val checkInDate = formatDate(selectedDateRange.first) ?: "Check-in"
+    val checkOutDate = formatDate(selectedDateRange.second) ?: "Check-out"
 
     // Row layout for check-in, arrow, and check-out dates
     Box(
@@ -183,6 +231,68 @@ fun DateRangePickerModal(
         )
     }
 }
+
+@Composable
+fun GuestPickerSheet(
+    rooms: Int,
+    adults: Int,
+    children: Int,
+    onValueChange: (Int, Int, Int) -> Unit
+) {
+    var localRooms by remember { mutableStateOf(rooms) }
+    var localAdults by remember { mutableStateOf(adults) }
+    var localChildren by remember { mutableStateOf(children) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text("Select Guests", style = MaterialTheme.typography.titleLarge)
+
+        GuestCounter("Rooms", localRooms, onIncrement = { localRooms++ }, onDecrement = { if (localRooms > 1) localRooms-- })
+        GuestCounter("Adults", localAdults, onIncrement = { localAdults++ }, onDecrement = { if (localAdults > 1) localAdults-- })
+        GuestCounter("Children", localChildren, onIncrement = { localChildren++ }, onDecrement = { if (localChildren > 0) localChildren-- })
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = {
+                onValueChange(localRooms, localAdults, localChildren)
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Apply")
+        }
+    }
+}
+
+@Composable
+fun GuestCounter(
+    label: String,
+    value: Int,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(label)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onDecrement) {
+                Icon(Icons.Default.Close, contentDescription = "Remove")
+            }
+            Text("$value", modifier = Modifier.width(24.dp), textAlign = TextAlign.Center)
+            IconButton(onClick = onIncrement) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
+        }
+    }
+}
+
 
 
 @Preview(showBackground = true)
