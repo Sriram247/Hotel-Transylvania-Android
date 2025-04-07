@@ -28,7 +28,7 @@
 
         <!-- Hotel List Activity -->
         <activity
-            android:name=".ui.screens.HotelListActivity"
+            android:name=".HotelListActivity"
             android:exported="false" />
 
     </application>

@@ -5,6 +5,7 @@ package com.example.hoteltransylvania.ui.screens
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,7 +25,7 @@ import java.util.Date
 
 @Composable
 fun HomeScreen(
-    onSearchClick: (String, String, Int) -> Unit
+    onSearchClick: (String, String, String, Int) -> Unit
 ) {
     var location by remember { mutableStateOf("") }
     var guests by remember { mutableStateOf("") }
@@ -57,7 +59,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         DateRangePickerField(
             selectedDateRange = selectedDate,
@@ -65,39 +67,13 @@ fun HomeScreen(
             showDatePicker = showDatePicker,
             onShowDatePickerChange = { showDatePicker = it }
         )
-//
-//        OutlinedTextField(
-//            value = checkInDate,
-//            onValueChange = { checkInDate = it },
-//            label = { Text("Check-in Date (yyyy-mm-dd)") },
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        OutlinedTextField(
-//            value = checkOutDate,
-//            onValueChange = { checkOutDate = it },
-//            label = { Text("Check-out Date (yyyy-mm-dd)") },
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        OutlinedTextField(
-//            value = guests,
-//            onValueChange = { guests = it },
-//            label = { Text("Number of Guests") },
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//            modifier = Modifier.fillMaxWidth()
-//        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Button(
             onClick = {
                 val guestCount = guests.toIntOrNull() ?: 1
-                onSearchClick(selectedDate.first.toString(), selectedDate.second.toString(), guestCount)
+                onSearchClick(location,selectedDate.first.toString(), selectedDate.second.toString(), guestCount)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -122,9 +98,10 @@ fun DateRangePickerField(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onShowDatePickerChange(true) } // Trigger the DatePicker dialog
+            .border(1.dp, MaterialTheme.colorScheme.outline)
             .padding(16.dp)
-            .border(1.dp, MaterialTheme.colorScheme.primary) // Optional border for the field
-            .padding(16.dp)
+            .clip(RoundedCornerShape(30.dp))
+        
     ) {
         Row(
             modifier = Modifier
@@ -138,6 +115,7 @@ fun DateRangePickerField(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = "Arrow Icon",
+                tint = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.align(Alignment.CenterVertically) // Center the arrow icon
             )
             Text(
@@ -211,7 +189,7 @@ fun DateRangePickerModal(
 @Composable
 fun PreviewMyScreen() {
     HotelTransylvaniaTheme {
-        HomeScreen(onSearchClick = { _, _, _ -> })
+        HomeScreen(onSearchClick = { _, _, _, _ -> })
     }
 }
 
