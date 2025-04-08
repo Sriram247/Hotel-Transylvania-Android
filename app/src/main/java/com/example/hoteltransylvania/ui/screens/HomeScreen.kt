@@ -21,8 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hoteltransylvania.ui.theme.HotelTransylvaniaTheme
+import java.lang.reflect.Array.set
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -35,7 +37,18 @@ fun HomeScreen(
     var rooms by remember { mutableIntStateOf(1) }
     var adults by remember { mutableIntStateOf(2) }
     var children by remember { mutableIntStateOf(0) }
-    var selectedDate by remember { mutableStateOf<Pair<Long?, Long?>>(Pair(null, null)) }
+
+    // currently set to april 12, 2025, future scope - to add current date dynamically
+    val calendar = Calendar.getInstance().apply {
+        set(2025, Calendar.APRIL, 12, 0, 0, 0)
+    }
+    val defaultCheckIn = calendar.timeInMillis
+    calendar.add(Calendar.DAY_OF_MONTH, 1)
+    val defaultCheckOut = calendar.timeInMillis
+
+    var selectedDate by remember {
+        mutableStateOf<Pair<Long?, Long?>>(Pair(defaultCheckIn, defaultCheckOut))
+    }
 
     var showDatePicker by remember { mutableStateOf(false) }
     var showGuestSheet by remember { mutableStateOf(false) }
