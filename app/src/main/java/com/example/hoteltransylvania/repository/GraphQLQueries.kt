@@ -15,4 +15,13 @@ object GraphQLQueries {
             }
         }
     """.trimIndent()
+
+    val BOOK_HOTEL_MUTATION = """
+        mutation ReserveHotel(${'$'}input: HotelReservationInput!) {
+            reserveHotel(input: ${'$'}input) {
+                confirmationNumber
+            }
+        }
+    """.trimIndent()
+
 }
