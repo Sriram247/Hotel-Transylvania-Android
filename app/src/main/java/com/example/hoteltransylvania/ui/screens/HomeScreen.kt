@@ -29,7 +29,7 @@ import java.util.Locale
 
 @Composable
 fun HomeScreen(
-    onSearchClick: (String, String, String, Int) -> Unit
+    onSearchClick: (String, String, String,Int, Int) -> Unit
 ) {
     var location by remember { mutableStateOf("") }
     var rooms by remember { mutableIntStateOf(1) }
@@ -64,6 +64,7 @@ fun HomeScreen(
             onValueChange = { location = it },
             label = { Text("Where to?") },
             modifier = Modifier.fillMaxWidth()
+                .clip(RoundedCornerShape(6.dp))
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -77,27 +78,29 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        //Guest Box Button
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { showGuestSheet = true }
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(6.dp))
                 .padding(16.dp)
         ) {
             Text("$rooms Room • $adults Adults • $children Children")
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        Button(
-            onClick = {
-                val guestCount = adults + children
-                onSearchClick(location, selectedDate.first.toString(), selectedDate.second.toString(), guestCount)
-
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Search Hotels")
-        }
+Button(
+    onClick = {
+        val guestCount = adults + children
+        onSearchClick(location, selectedDate.first.toString(), selectedDate.second.toString(), rooms, guestCount)
+    },
+    modifier = Modifier
+        .fillMaxWidth(),
+    shape = RoundedCornerShape(6.dp)
+) {
+    Text("Search Hotels")
+}
     }
 
     if (showGuestSheet) {
@@ -146,10 +149,9 @@ fun DateRangePickerField(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onShowDatePickerChange(true) } // Trigger the DatePicker dialog
-            .border(1.dp, MaterialTheme.colorScheme.outline)
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(6.dp))
             .padding(16.dp)
-            .clip(RoundedCornerShape(30.dp))
-        
+
     ) {
         Row(
             modifier = Modifier
@@ -294,12 +296,11 @@ fun GuestCounter(
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewMyScreen() {
     HotelTransylvaniaTheme {
-        HomeScreen(onSearchClick = { _, _, _, _ -> })
+        HomeScreen(onSearchClick = { _, _, _, _, _ -> })
     }
 }
 
