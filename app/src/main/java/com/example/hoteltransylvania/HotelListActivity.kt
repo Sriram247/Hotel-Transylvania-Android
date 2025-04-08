@@ -14,17 +14,19 @@ import com.example.hoteltransylvania.viewmodel.HotelListViewModel
 
 class HotelListActivity : ComponentActivity() {
 
-    // Get data from the intent
-    private val location = intent.getStringExtra("location") ?: ""
-    private val checkIn = intent.getStringExtra("checkIn") ?: ""
-    private val checkOut = intent.getStringExtra("checkOut") ?: ""
-    private val rooms = intent.getIntExtra("rooms",1)
-    private val guests = intent.getIntExtra("guests", 1)
+
 
     private val viewModel: HotelListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Get data from the intent
+        val location = intent.getStringExtra("location") ?: "default"
+        val checkIn = intent.getStringExtra("checkIn") ?: ""
+        val checkOut = intent.getStringExtra("checkOut") ?: ""
+        val rooms = intent.getIntExtra("rooms",1)
+        val guests = intent.getIntExtra("guests", 1)
 
         setContent {
             HotelTransylvaniaTheme {
