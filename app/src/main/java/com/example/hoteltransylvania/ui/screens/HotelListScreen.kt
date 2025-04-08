@@ -47,7 +47,7 @@ fun HotelListScreen(
     checkOut: String,
     rooms: Int,
     guests: Int,
-    onHotelSelected: (Hotel) -> Unit
+    onHotelSelected: @Composable (Hotel) -> Unit
 ){
 
     var selectedHotel by remember { mutableStateOf<Hotel?>(null) }
@@ -70,7 +70,6 @@ fun HotelListScreen(
 
         // UI elements
         if (loading.value) {
-            //wait for 3 seconds so I can flex the loading screen
             //loading part
             ShimmerHotelList()
         } else if (error.value.isNotEmpty()) {

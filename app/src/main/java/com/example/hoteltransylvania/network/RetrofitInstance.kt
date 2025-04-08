@@ -14,4 +14,6 @@ object RetrofitInstance {
             .build()
             .create(HotelGraphQLService::class.java)
     }
+
+
 }
