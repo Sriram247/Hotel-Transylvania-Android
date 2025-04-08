@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HotelTransylvaniaTheme() {
-                HomeScreen { location ,checkIn, checkOut, guests ->
+                HomeScreen { location ,checkIn, checkOut,rooms, guests ->
                     // Save to Room (next step)
                     // Make GraphQL service call (later)
 
@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
                     intent.putExtra("location", location)
                     intent.putExtra("checkIn", checkIn)
                     intent.putExtra("checkOut", checkOut)
+                    intent.putExtra("rooms", rooms)
                     intent.putExtra("guests", guests)
                     startActivity(intent)
 
