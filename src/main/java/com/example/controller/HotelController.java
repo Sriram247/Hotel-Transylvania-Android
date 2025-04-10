@@ -24,10 +24,7 @@ public class HotelController {
         return hotelService.findAll();
     }
 
-    @QueryMapping
-    public Optional<Hotel> getHotelById(@Argument Integer id) {
-        return hotelService.findById(id);
-    }
+
 
     @MutationMapping
     public Hotel addHotel(

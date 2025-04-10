@@ -18,10 +18,7 @@ public class RoomController {
         return roomService.findAll();
     }
 
-    @GetMapping("/{id}")
-    public Optional<Room> findById(@PathVariable Long id) {
-        return roomService.findById(id);
-    }
+
 
     @PostMapping
     public Room save(@RequestBody Room room) {
