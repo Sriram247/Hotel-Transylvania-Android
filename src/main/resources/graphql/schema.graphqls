@@ -2,55 +2,42 @@ type Hotel {
     id: ID!
     name: String!
     location: String!
-    rating: Int!
-    contactNumber: String!
-    rooms: [Room]
-    reviews: [Review]
-    reservations: [Reservation]
+    rating: String!
+    available: Boolean!
+    imageUrl: String
+    pricePerNight: Int!
 }
 
-type Room {
+input HotelInput {
     id: ID!
-    roomNumber: String!
-    type: String!
-    price: Float!
-    isAvailable: Boolean!
-    hotel: Hotel!
 }
+
 
 type Guest {
     id: ID!
     firstName: String!
-    lastName: String!
-    email: String!
-    phoneNumber: String!
+    gender: String!
     reservations: [Reservation]
-    reviews: [Review]
 }
 
 type Review {
     id: ID!
-    rating: Int!
+    rating: String!
     comment: String!
-    guest: Guest!
     hotel: Hotel!
 }
 
 type Reservation {
-    id: ID!
-    guest: Guest!
+    confirmationNumber: ID!
     hotel: Hotel!
+    location: String!
     checkInDate: String!
     checkOutDate: String!
-    room: Room!
 }
 
 type Query {
     getHotelById(id: ID!): Hotel
     getAllHotels: [Hotel]
-
-    getRoomById(id: ID!): Room
-    getAllRooms: [Room]
 
     getGuestById(id: ID!): Guest
     getAllGuests: [Guest]
@@ -63,9 +50,29 @@ type Query {
 }
 
 type Mutation {
-    addHotel(name: String!, location: String!, rating: Int!, contactNumber: String!): Hotel
-    addRoom(roomNumber: String!, type: String!, price: Float!, isAvailable: Boolean!, hotelId: ID!): Room
-    addGuest(firstName: String!, lastName: String!, email: String!, phoneNumber: String!): Guest
-    addReview(rating: Int!, comment: String!, guestId: ID!, hotelId: ID!): Review
-    addReservation(guestId: ID!, hotelId: ID!, checkInDate: String!, checkOutDate: String!, roomId: ID!): Reservation
+    addHotel(
+        name: String!, 
+        location: String!, 
+        rating: String!, 
+        available: Boolean!, 
+        pricePerNight: Int
+    ): Hotel
+
+    addGuest(
+        firstName: String!, 
+        gender: String!
+    ): Guest
+
+    addReview(
+        rating: String!, 
+        comment: String!, 
+        hotel: HotelInput!
+    ): Review
+
+    addReservation(
+        hotel: HotelInput!, 
+        location: String!, 
+        checkInDate: String!, 
+        checkOutDate: String!
+    ): Reservation
 }

@@ -11,7 +11,13 @@ public class Guest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
-    private String lastName;
-    private String email;
-    private String phoneNumber;
+    private String gender;
+
+    public Guest() {}
+
+
+    public Guest(String firstName, String gender) {
+        this.firstName = firstName;
+        this.gender = gender;
+    }
 }
