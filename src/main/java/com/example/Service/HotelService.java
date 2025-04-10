@@ -25,9 +25,6 @@ public class HotelService {
         return hotelRepository.findAll();
     }
 
-    public Optional<Hotel> findById(Integer id){
-        return hotelRepository.findById(id.toString());
-    }
 
     @Transactional
     public Hotel save(Hotel hotel) {
