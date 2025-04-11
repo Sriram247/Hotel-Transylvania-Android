@@ -13,7 +13,9 @@ public class Reservation {
     
     private String hotelName;
     
-    
+
+    public Reservation() {}
+
     
     public Reservation(String hotelName, String location, String checkInDate, String checkOutDate) {
         this.hotelName = hotelName;
