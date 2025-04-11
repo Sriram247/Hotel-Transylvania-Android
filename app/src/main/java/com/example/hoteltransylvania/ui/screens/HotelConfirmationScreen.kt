@@ -18,7 +18,7 @@ fun HotelConfirmationScreen(confirmationNumber: String) {
     ) {
         Text("🎉 Booking Confirmed!", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Confirmation Number:", style = MaterialTheme.typography.bodyLarge)
-        Text(confirmationNumber, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+        Text("Confirmation Number: ", style = MaterialTheme.typography.bodyLarge)
+        Text("RES-$confirmationNumber", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
     }
 }

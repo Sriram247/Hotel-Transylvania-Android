@@ -50,7 +50,7 @@ class HotelReserveViewModel(
         viewModelScope.launch {
             val response: Response<ReserveHotelResponse> = graphQLService.reserveHotel(request)
             if (response.isSuccessful) {
-                val confirmation = response.body()?.id
+                val confirmation = response.body()?.data?.addReservation?.id
                 if (confirmation != null) {
                     _confirmationNumber.value = confirmation
                     onSuccess(confirmation)

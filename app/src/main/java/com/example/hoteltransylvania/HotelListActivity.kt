@@ -17,12 +17,18 @@ import com.example.hoteltransylvania.ui.screens.HotelListScreen
 import com.example.hoteltransylvania.viewmodel.HotelReserveViewModel
 import android.util.Log
 import androidx.compose.runtime.*
+import com.example.hoteltransylvania.network.RetrofitInstance
+import com.example.hoteltransylvania.service.HotelGraphQLService
+import com.example.hoteltransylvania.viewmodel.HotelReserveViewModelFactory
 
 
 class HotelListActivity : ComponentActivity() {
 
     private val viewModel: HotelListViewModel by viewModels()
-    private val reserveViewModel: HotelReserveViewModel by viewModels()
+    private val reserveViewModel: HotelReserveViewModel by viewModels {
+        HotelReserveViewModelFactory(RetrofitInstance.apiService)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +58,7 @@ class HotelListActivity : ComponentActivity() {
                     }
                 },
                 onError = { errorMsg ->
-                    Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error: $errorMsg", Toast.LENGTH_SHORT).show()
                 }
             )
         }
@@ -67,6 +73,7 @@ class HotelListActivity : ComponentActivity() {
                     rooms = rooms,
                     guests = guests,
                     onHotelSelected = { hotel, guestList ->
+                        Log.i(TAG, "HotelListActivity - onHotelSelected: $hotel, $guestList")
                         submitHotelDetails(hotel, guestList)
                     }
                 )

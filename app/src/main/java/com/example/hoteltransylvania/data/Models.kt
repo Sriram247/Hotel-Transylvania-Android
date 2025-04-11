@@ -31,10 +31,14 @@ data class GuestInfo(
 
 
 data class ReserveHotelResponse(
-    val confirmationNumber: String
-) {
+    val data: AddReservationData
+)
+
+data class AddReservationData(
+    val addReservation: Reservation
+)
+
+data class Reservation(
     val id: String
-        get() {
-            TODO()
-        }
-}
+)
+
