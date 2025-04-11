@@ -12,6 +12,7 @@ import com.example.hoteltransylvania.data.Hotel
 import com.example.hoteltransylvania.data.GuestInfo
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun HotelFormScreen(
@@ -59,6 +60,8 @@ fun HotelFormScreen(
         Text("Price/Night: \$${hotel.pricePerNight}")
 
         Spacer(modifier = Modifier.height(24.dp))
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Guest Form Fields
         repeat(guests) { index ->
@@ -74,26 +77,31 @@ fun HotelFormScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text("Gender:")
-            genderOptions.forEach { gender ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 2.dp)
-                ) {
-                    RadioButton(
-                        selected = guestGenders[index].value == gender,
-                        onClick = { guestGenders[index].value = gender }
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(gender)
+            Row {
+                genderOptions.forEach { gender ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(end = 16.dp)
+                    ) {
+                        RadioButton(
+                            selected = guestGenders[index].value == gender,
+                            onClick = { guestGenders[index].value = gender }
+                        )
+                        Text(gender)
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.height(24.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+            Spacer(modifier = Modifier.height(24.dp))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Submit Button
+
+
         Button(
             onClick = {
                 val guestList = guestNames.mapIndexed { index, nameState ->
@@ -104,8 +112,9 @@ fun HotelFormScreen(
                 }
                 onSubmit(guestList)
             },
-            enabled = guestNames.all { it.value.text.isNotBlank() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(6.dp)
         ) {
             Text("Submit")
         }
