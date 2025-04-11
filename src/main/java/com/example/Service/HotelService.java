@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class HotelService {
@@ -25,6 +24,10 @@ public class HotelService {
         return hotelRepository.findAll();
     }
 
+    public Optional<Hotel> findById(Integer id) {
+        return hotelRepository.findById(id);
+    }
+    
 
     @Transactional
     public Hotel save(Hotel hotel) {

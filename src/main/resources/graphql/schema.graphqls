@@ -3,7 +3,7 @@ type Hotel {
     name: String!
     location: String!
     rating: String!
-    available: Boolean!
+    isAvailable: Boolean
     imageUrl: String
     pricePerNight: Int!
 }
@@ -28,8 +28,8 @@ type Review {
 }
 
 type Reservation {
-    confirmationNumber: ID!
-    hotel: Hotel!
+    id: ID!
+    hotelName: String!
     location: String!
     checkInDate: String!
     checkOutDate: String!
@@ -49,13 +49,15 @@ type Query {
     getAllReservations: [Reservation]
 }
 
+
 type Mutation {
     addHotel(
         name: String!, 
         location: String!, 
         rating: String!, 
-        available: Boolean!, 
-        pricePerNight: Int
+        isAvailable: Boolean!, 
+        pricePerNight: Int!,
+        imageUrl: String
     ): Hotel
 
     addGuest(
@@ -70,9 +72,10 @@ type Mutation {
     ): Review
 
     addReservation(
-        hotel: HotelInput!, 
-        location: String!, 
-        checkInDate: String!, 
+        hotelName: String!
+        location: String!
+        checkInDate: String!
         checkOutDate: String!
     ): Reservation
+
 }

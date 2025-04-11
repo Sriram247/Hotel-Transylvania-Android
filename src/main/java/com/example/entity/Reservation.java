@@ -11,14 +11,28 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne
-    @JoinColumn(name = "guest_id")
-    private Guest guest;
+    private String hotelName;
     
-    @ManyToOne
-    @JoinColumn(name = "hotel_id")
-    private Hotel hotel;
     
-    private Date checkInDate;
-    private Date checkOutDate;
+    
+    public Reservation(String hotelName, String location, String checkInDate, String checkOutDate) {
+        this.hotelName = hotelName;
+        this.location = location;
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    private String location;
+
+    private String checkInDate;
+    private String checkOutDate;
+
 }

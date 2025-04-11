@@ -13,15 +13,19 @@ public class Hotel {
     private String name;
     private String location;
     private String rating;
-    private String contactNumber;
+    private String imageUrl;
+    private Integer pricePerNight;
+    private Boolean isAvailable = true;
 
     public Hotel() {}
 
-    public Hotel(String name, String location, String rating, String contactNumber) {
+    public Hotel(String name, String location, String rating, String imageUrl, Integer pricePerNight, Boolean isAvailable) {
         this.name = name;
         this.location = location;
         this.rating = rating;
-        this.contactNumber = contactNumber;
+        this.imageUrl = imageUrl;
+        this.pricePerNight = pricePerNight;
+        this.isAvailable = isAvailable;
     }
 
 

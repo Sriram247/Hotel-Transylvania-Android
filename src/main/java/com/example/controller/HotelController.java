@@ -31,9 +31,11 @@ public class HotelController {
             @Argument String name,
             @Argument String location,
             @Argument String rating,
-            @Argument String contactNumber
-    ) {
-        Hotel newHotel = new Hotel(name, location, rating, contactNumber);
+            @Argument String contactNumber,
+            @Argument String imageUrl,
+            @Argument Integer pricePerNight,
+            @Argument Boolean isAvailable) {
+        Hotel newHotel = new Hotel(name, location, rating , imageUrl, pricePerNight, isAvailable);
         return hotelService.save(newHotel);
     }
 }
