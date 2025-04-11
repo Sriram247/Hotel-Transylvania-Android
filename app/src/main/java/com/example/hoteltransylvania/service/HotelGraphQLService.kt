@@ -13,7 +13,7 @@ import retrofit2.http.GET
 interface HotelGraphQLService {
 
     @Headers("Content-Type: application/json")
-    @GET("graphql/getHotels")  // Replace with your actual endpoint
+    @GET("graphql/getHotels")
     fun getHotels(
         @Body request: GraphQLRequest
     ): Call<HotelResponseWrapper>

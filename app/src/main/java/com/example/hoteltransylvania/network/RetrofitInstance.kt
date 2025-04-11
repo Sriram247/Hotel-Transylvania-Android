@@ -9,7 +9,7 @@ object RetrofitInstance {
     // The Retrofit instance, which is used to create the API service
     val apiService: HotelGraphQLService by lazy {
         Retrofit.Builder()
-            .baseUrl("https://your-backend-url.com/") // Replace with your backend URL
+            .baseUrl("http://localhost:8082/") // Replace with your backend URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(HotelGraphQLService::class.java)

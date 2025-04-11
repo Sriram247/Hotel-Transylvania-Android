@@ -8,7 +8,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.hoteltransylvania.ui.screens.HomeScreen
 import com.example.hoteltransylvania.ui.theme.HotelTransylvaniaTheme
-import com.example.hoteltransylvania.HotelListActivity
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,14 +1,13 @@
 package com.example.hoteltransylvania.viewmodel
 
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hoteltransylvania.data.GraphQLRequest
 import com.example.hoteltransylvania.data.GuestInfo
 import com.example.hoteltransylvania.data.Hotel
-import com.example.hoteltransylvania.data.GraphQLRequest
-import com.example.hoteltransylvania.service.HotelGraphQLService
 import com.example.hoteltransylvania.data.ReserveHotelResponse
-import com.example.hoteltransylvania.repository.GraphQLQueries.BOOK_HOTEL_MUTATION
+import com.example.hoteltransylvania.service.HotelGraphQLService
+import com.example.hoteltransylvania.repository.GraphQLQueries
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -33,44 +32,36 @@ class HotelReserveViewModel(
         checkOut: String,
         rooms: Int,
         guests: List<GuestInfo>,
-        onSuccess: @Composable (String) -> Unit,
+        onSuccess: (String) -> Unit,
         onError: (String) -> Unit
-
     ) {
-        val input = mapOf(
-            "hotelId" to hotel.id,
-            "checkIn" to checkIn,
-            "checkOut" to checkOut,
-            "rooms" to rooms,
-            "guests" to guests
+        val mutation = GraphQLQueries.getBookHotelMutation(
+            checkInDate = checkIn,
+            checkOutDate = checkOut,
+            hotelName = hotel.name,
+            location = hotel.location
         )
 
-        val request = GraphQLRequest(
-            query = BOOK_HOTEL_MUTATION,
-            variables = mapOf("input" to input)
-        )
+        val request = GraphQLRequest(query = mutation)
 
         _loading.value = true
         _error.value = null
 
         viewModelScope.launch {
-            try {
-                val response: Response<ReserveHotelResponse> = graphQLService.reserveHotel(request)
-                if (response.isSuccessful) {
-                    val confirmation = response.body()?.confirmationNumber
-                    if (confirmation != null) {
-                        onSuccess(confirmation)  // <-- Return it directly
-                    } else {
-                        onError("No confirmation number received.")
-                    }
+            val response: Response<ReserveHotelResponse> = graphQLService.reserveHotel(request)
+            if (response.isSuccessful) {
+                val confirmation = response.body()?.id
+                if (confirmation != null) {
+                    _confirmationNumber.value = confirmation
+                    onSuccess(confirmation)
                 } else {
-                    _error.value = response.errorBody()?.string() ?: "Unknown error"
+                    onError("No confirmation number received.")
                 }
-            } catch (e: Exception) {
-                _error.value = "Exception: ${e.message}"
-            } finally {
-                _loading.value = false
+            } else {
+                _error.value = response.errorBody()?.string() ?: "Unknown error"
+                onError(_error.value ?: "Unknown error")
             }
+            _loading.value = false
         }
     }
 }

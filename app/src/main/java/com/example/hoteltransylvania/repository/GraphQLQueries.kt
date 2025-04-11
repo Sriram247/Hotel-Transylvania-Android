@@ -4,8 +4,8 @@ object GraphQLQueries {
 
     // A GraphQL query to fetch hotels
     val SEARCH_HOTELS_QUERY = """
-        query SearchHotels(${'$'}location: String!, ${'$'}checkIn: String!, ${'$'}checkOut: String!, ${'$'}guests: Int!) {
-            hotels(location: ${'$'}location, checkIn: ${'$'}checkIn, checkOut: ${'$'}checkOut, guests: ${'$'}guests) {
+        query getHotels {
+            getAllHotels {
                 id
                 name
                 location
@@ -16,12 +16,23 @@ object GraphQLQueries {
         }
     """.trimIndent()
 
-    val BOOK_HOTEL_MUTATION = """
-        mutation ReserveHotel(${'$'}input: HotelReservationInput!) {
-            reserveHotel(input: ${'$'}input) {
-                confirmationNumber
+    fun getBookHotelMutation(
+        checkInDate: String,
+        checkOutDate: String,
+        hotelName: String,
+        location: String
+    ): String {
+        return """
+            mutation MyMutation {
+                addReservation(
+                    checkInDate: "$checkInDate"
+                    checkOutDate: "$checkOutDate"
+                    hotelName: "$hotelName"
+                    location: "$location"
+                ) {
+                    id
+                }
             }
-        }
-    """.trimIndent()
-
+        """.trimIndent()
+    }
 }

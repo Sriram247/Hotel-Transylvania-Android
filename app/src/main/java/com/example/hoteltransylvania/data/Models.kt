@@ -28,14 +28,13 @@ data class GuestInfo(
     val gender: String
 )
 
-data class HotelReservationInput(
-    val hotelId: String,
-    val checkIn: String,
-    val checkOut: String,
-    val rooms: Int,
-    val guests: List<GuestInfo>
-)
+
 
 data class ReserveHotelResponse(
     val confirmationNumber: String
-)
+) {
+    val id: String
+        get() {
+            TODO()
+        }
+}
