@@ -29,7 +29,7 @@ import java.util.Locale
 fun HomeScreen(
     onSearchClick: (String, String, String,Int, Int) -> Unit
 ) {
-    var location by remember { mutableStateOf("") }
+    var location by remember { mutableStateOf("default") }
     var rooms by remember { mutableIntStateOf(1) }
     var adults by remember { mutableIntStateOf(2) }
     var children by remember { mutableIntStateOf(0) }

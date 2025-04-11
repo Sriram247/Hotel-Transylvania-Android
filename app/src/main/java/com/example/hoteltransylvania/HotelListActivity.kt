@@ -1,5 +1,6 @@
 package com.example.hoteltransylvania
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -14,6 +15,9 @@ import com.example.hoteltransylvania.ui.screens.HotelConfirmationScreen
 import com.example.hoteltransylvania.ui.screens.HotelFormScreen
 import com.example.hoteltransylvania.ui.screens.HotelListScreen
 import com.example.hoteltransylvania.viewmodel.HotelReserveViewModel
+import android.util.Log
+import androidx.compose.runtime.*
+
 
 class HotelListActivity : ComponentActivity() {
 
@@ -30,7 +34,9 @@ class HotelListActivity : ComponentActivity() {
         val rooms = intent.getIntExtra("rooms", 1)
         val guests = intent.getIntExtra("guests", 1)
 
-        // Handle hotel reservation submission
+        Log.i(TAG, "HotelListActivity - location: $location, checkIn: $checkIn, checkOut: $checkOut, rooms: $rooms, guests: $guests")
+
+        // Function to submit reservation
         fun submitHotelDetails(hotel: Hotel, guestInfo: List<GuestInfo>) {
             reserveViewModel.reserveHotel(
                 hotel = hotel,
@@ -39,7 +45,6 @@ class HotelListActivity : ComponentActivity() {
                 rooms = rooms,
                 guests = guestInfo,
                 onSuccess = { confirmationNumber ->
-                    // Display confirmation screen directly
                     setContent {
                         HotelTransylvaniaTheme {
                             HotelConfirmationScreen(confirmationNumber = confirmationNumber)
@@ -61,23 +66,15 @@ class HotelListActivity : ComponentActivity() {
                     checkOut = checkOut,
                     rooms = rooms,
                     guests = guests,
-                    onHotelSelected = { hotel ->
-                        // Show the hotel form screen with guest details and reservation info
-                        HotelFormScreen(
-                            hotel = hotel,
-                            guests = guests,
-                            checkIn = checkIn,
-                            checkOut = checkOut,
-                            rooms = rooms,
-                            location = location,
-                            onSubmit = { guestList ->
-                                // Handle submission of guest details and reserve hotel
-                                submitHotelDetails(hotel, guestList)
-                            }
-                        )
+                    onHotelSelected = { hotel, guestList ->
+                        submitHotelDetails(hotel, guestList)
                     }
                 )
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "HotelListActivity"
     }
 }

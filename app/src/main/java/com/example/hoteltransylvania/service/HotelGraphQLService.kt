@@ -8,18 +8,23 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.GET
 
 interface HotelGraphQLService {
 
+    @POST("graphql")
     @Headers("Content-Type: application/json")
-    @GET("graphql/getHotels")
     fun getHotels(
         @Body request: GraphQLRequest
     ): Call<HotelResponseWrapper>
 
-    @POST("graphql/reserveHotel")
-    suspend fun reserveHotel(@Body body: GraphQLRequest): Response<ReserveHotelResponse>
+
+    @POST("graphql")
+    @Headers("Content-Type: application/json")
+    suspend fun reserveHotel(
+        @Body body: GraphQLRequest
+    ): Response<ReserveHotelResponse>
+
 }
+
 
 

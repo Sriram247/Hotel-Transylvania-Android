@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HotelTransylvaniaTheme() {
-                HomeScreen { location ,checkIn, checkOut,rooms, guests ->
+                HomeScreen {location, checkIn, checkOut, rooms, guests ->
                     // Save to Room (next step)
                     // For now, just pass the data to the next activity
                     // GraphQL service call happens in the HotelListActivity

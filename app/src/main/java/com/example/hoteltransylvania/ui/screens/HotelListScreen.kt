@@ -31,13 +31,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
+import com.example.hoteltransylvania.data.GuestInfo
 import com.example.hoteltransylvania.viewmodel.HotelListViewModel
 import com.example.hoteltransylvania.data.Hotel
 import kotlinx.coroutines.delay
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.placeholder
 import com.eygraber.compose.placeholder.shimmer
-
 
 @Composable
 fun HotelListScreen(
@@ -47,44 +47,54 @@ fun HotelListScreen(
     checkOut: String,
     rooms: Int,
     guests: Int,
-    onHotelSelected: @Composable (Hotel) -> Unit
-){
-
+    onHotelSelected: (Hotel, List<GuestInfo>) -> Unit
+) {
     var selectedHotel by remember { mutableStateOf<Hotel?>(null) }
-    // Observe the hotel list, loading, and error states
+
     val hotels = viewModel.hotels.observeAsState(emptyList())
-    val loading = viewModel.loading.observeAsState(false)
+    val loading = viewModel.loading.observeAsState(true)
     val error = viewModel.error.observeAsState("")
 
-    //for fetching data and populating
-    HotelListRequest(viewModel=viewModel, location = location, checkIn = checkIn, checkOut = checkOut, rooms = rooms, guests = guests, hotels = hotels, loading = loading, error = error)
-
-
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        // Show the passed data at the top
-        Text("Check-in: $checkIn", style = MaterialTheme.typography.bodyMedium)
-        Text("Check-out: $checkOut", style = MaterialTheme.typography.bodyMedium)
-        Text("Guests: $guests", style = MaterialTheme.typography.bodyMedium)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // UI elements
-        if (loading.value) {
-            //loading part
-            ShimmerHotelList()
-        } else if (error.value.isNotEmpty()) {
-            Text(text = error.value, color = MaterialTheme.colorScheme.error)
-        } else {
-            // API call and RecyclerView equivalent (LazyColumn)
-            HotelList(hotels = hotels.value) { hotel ->
-                selectedHotel = hotel
+    if (selectedHotel != null) {
+        // 👇 Show the form screen instead of the hotel list
+        HotelFormScreen(
+            hotel = selectedHotel!!,
+            guests = guests,
+            checkIn = checkIn,
+            checkOut = checkOut,
+            rooms = rooms,
+            location = location,
+            onSubmit = { guestList ->
+                onHotelSelected(selectedHotel!!, guestList)
             }
+        )
 
-            Spacer(modifier = Modifier.height(16.dp))
+    } else {
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Text("Check-in: $checkIn", style = MaterialTheme.typography.bodyMedium)
+            Text("Check-out: $checkOut", style = MaterialTheme.typography.bodyMedium)
+            Text("Guests: $guests", style = MaterialTheme.typography.bodyMedium)
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            if (loading.value) {
+                ShimmerHotelList()
+            } else if (error.value.isNotEmpty()) {
+                Text(text = error.value, color = MaterialTheme.colorScheme.error)
+            } else {
+                Text("Number of retrieved hotels: ${hotels.value.size}", style = MaterialTheme.typography.bodyMedium)
+
+                HotelList(hotels = hotels.value) { hotel ->
+                    selectedHotel = hotel // 👈 Trigger rendering form
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
 
+        HotelListRequest(viewModel = viewModel)
     }
+
 }
 
 
@@ -109,6 +119,7 @@ fun HotelItem(hotel: Hotel, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable(onClick = onClick),
+        shape = RoundedCornerShape(15.dp),
 
         ) {
         Row(modifier = Modifier
@@ -228,22 +239,12 @@ fun ShimmerHotelItem(){
 
 // call the hotelListViewModel
 @Composable
-fun HotelListRequest(viewModel: HotelListViewModel, location: String, checkIn: String, checkOut: String, rooms: Int, guests: Int, hotels: State<List<Hotel>>, loading: State<Boolean>, error: State<String>) {
-
+fun HotelListRequest(viewModel: HotelListViewModel) {
 
     // Fetching hotel data when the screen is displayed
     LaunchedEffect(Unit) {
-
-        delay(3000) // 3 seconds flex
-
-        viewModel.fetchHotels(
-            location = location,
-            checkIn = checkIn,
-            checkOut = checkOut,
-            rooms = rooms,
-            guests = guests
-        )
-
+        // delay(3000) // 3 seconds flex
+        viewModel.fetchHotels()
 
     }
 

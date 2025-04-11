@@ -22,17 +22,14 @@ class HotelListViewModel(application: Application) : AndroidViewModel(applicatio
     val loading = MutableLiveData<Boolean>()
     val error = MutableLiveData<String>()
 
-    fun fetchHotels(location: String, checkIn: String, checkOut: String,rooms: Int, guests: Int) {
+    fun fetchHotels() {
         // Show loading
         loading.postValue(true)
 
         // Build the GraphQL query
         val query = GraphQLQueries.SEARCH_HOTELS_QUERY
 
-        val request = GraphQLRequest(query, mapOf(
-            "location" to location,
-            //Sending in only the location (Since its a sample project)
-        ))
+        val request = GraphQLRequest(query = query)
 
         // Make the GraphQL request
         RetrofitInstance.apiService.getHotels(request).enqueue(object : Callback<HotelResponseWrapper> {
@@ -43,16 +40,16 @@ class HotelListViewModel(application: Application) : AndroidViewModel(applicatio
                 loading.postValue(false)
 
                 if (response.isSuccessful) {
-                    val hotelList = response.body()?.data?.hotels ?: emptyList()
+                    val hotelList = response.body()?.data?.getAllHotels ?: emptyList()
                     hotels.postValue(hotelList)
                 } else {
-                    error.postValue("Error: ${response.code()}")
+                    error.postValue("Error response: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<HotelResponseWrapper>, t: Throwable) {
                 loading.postValue(false)
-                error.postValue("Error: ${t.localizedMessage}")
+                error.postValue("Error - retrofit failure : ${t.localizedMessage}")
             }
         })
     }

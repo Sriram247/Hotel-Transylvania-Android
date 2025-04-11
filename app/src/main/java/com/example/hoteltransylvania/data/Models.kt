@@ -10,7 +10,7 @@ data class HotelResponseWrapper(
 )
 
 data class HotelResponseData(
-    val hotels: List<Hotel>
+    val getAllHotels: List<Hotel>
 )
 
 data class Hotel(
