@@ -27,7 +27,7 @@ public class ReservationController {
 
 
     @QueryMapping
-    public List<Reservation> findAll() {
+    public List<Reservation> getAllReservations() {
         return reservationService.findAll();
     }
 
