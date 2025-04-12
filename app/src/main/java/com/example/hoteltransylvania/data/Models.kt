@@ -20,10 +20,11 @@ data class Hotel(
     val id: Int,
     val name: String,
     val location: String?,
-    val imageUrl: String = "https://www.shutterstock.com/image-photo/mysterious-eerie-ambience-inside-motel-600nw-2454376659.jpg",
+    val imageUrl: String,
     val rating: Double?,
     val pricePerNight: Double?,
-    val availability: Boolean
+    val availability: Boolean,
+    val ai_summary: String?,
 ) : Parcelable
 
 
@@ -47,14 +48,18 @@ data class Reservation(
 )
 
 
-//reviews
-data class ReviewsResponse(
-    val data: ReviewData
+data class ReviewResponseWrapper(
+    val data: ReviewData?
 )
 
 data class ReviewData(
-    val reviews: List<String>,
-    val summary: String
+    val getAllReviews: List<ReviewList>?
 )
+
+data class ReviewList(
+    val hotelId: Int,
+    val comment: String
+)
+
 
 

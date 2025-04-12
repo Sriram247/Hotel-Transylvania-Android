@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hoteltransylvania.ui.theme.HotelTransylvaniaTheme
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -27,14 +28,16 @@ import java.util.Locale
 
 @Composable
 fun HomeScreen(
-    onSearchClick: (String, String, String,Int, Int) -> Unit
+    onSearchClick: (String, String, String, Int, Int) -> Unit
 ) {
-    var location by remember { mutableStateOf("default") }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    var location by remember { mutableStateOf("") }
     var rooms by remember { mutableIntStateOf(1) }
     var adults by remember { mutableIntStateOf(2) }
     var children by remember { mutableIntStateOf(0) }
 
-    // currently set to april 12, 2025, future scope - to add current date dynamically
     val calendar = Calendar.getInstance().apply {
         set(2025, Calendar.APRIL, 12, 0, 0, 0)
     }
@@ -49,67 +52,79 @@ fun HomeScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     var showGuestSheet by remember { mutableStateOf(false) }
 
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    val context = LocalContext.current
-
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Greetings, Traveler!",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.align(Alignment.Start)
-
-        )
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        OutlinedTextField(
-            value = location,
-            onValueChange = { location = it },
-            label = { Text("Where to?") },
-            modifier = Modifier.fillMaxWidth()
-                .clip(RoundedCornerShape(6.dp))
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        DateRangePickerField(
-            selectedDateRange = selectedDate,
-            onDateRangeSelected = { selectedDate = it },
-            showDatePicker = showDatePicker,
-            onShowDatePickerChange = { showDatePicker = it }
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        //Guest Box Button
-        Box(
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable { showGuestSheet = true }
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(6.dp))
-                .padding(16.dp)
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("$rooms Room • $adults Adults • $children Children")
-        }
+            Text(
+                text = "Greetings, Traveler!",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.align(Alignment.Start)
+            )
 
-        Spacer(modifier = Modifier.height(10.dp))
-Button(
-    onClick = {
-        val guestCount = adults + children
-        onSearchClick(location, selectedDate.first.toString(), selectedDate.second.toString(), rooms, guestCount)
-    },
-    modifier = Modifier
-        .fillMaxWidth(),
-    shape = RoundedCornerShape(6.dp)
-) {
-    Text("Search Hotels")
-}
+            Spacer(modifier = Modifier.height(40.dp))
+
+            OutlinedTextField(
+                value = location,
+                onValueChange = { location = it },
+                label = { Text("Where to?") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(6.dp))
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            DateRangePickerField(
+                selectedDateRange = selectedDate,
+                onDateRangeSelected = { selectedDate = it },
+                showDatePicker = showDatePicker,
+                onShowDatePickerChange = { showDatePicker = it }
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showGuestSheet = true }
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(6.dp))
+                    .padding(16.dp)
+            ) {
+                Text("$rooms Room • $adults Adults • $children Children")
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                onClick = {
+                    if (location.isBlank()) {
+                        // Show Snackbar if location is empty
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Please enter a location.")
+
+                        }
+                    } else {
+                        val guestCount = adults + children
+                        val checkInDate = formatDate(selectedDate.first)
+                        val checkOutDate = formatDate(selectedDate.second)
+                        onSearchClick(location, checkInDate, checkOutDate, rooms, guestCount)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(6.dp)
+            ) {
+                Text("Search Hotels")
+            }
+        }
     }
 
     if (showGuestSheet) {
@@ -131,9 +146,8 @@ Button(
             )
         }
     }
-
-
 }
+
 
 fun formatDate(millis: Long?): String {
     return millis?.let {

@@ -60,10 +60,21 @@ fun HotelListScreen(
 
     // Fetching hotel data when the screen is displayed
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            Text("Check-in: $checkIn", style = MaterialTheme.typography.bodyMedium)
-            Text("Check-out: $checkOut", style = MaterialTheme.typography.bodyMedium)
-            Text("Guests: $guests", style = MaterialTheme.typography.bodyMedium)
-
+Text(
+    text = "Check-in: $checkIn",
+    style = MaterialTheme.typography.bodyMedium,
+    modifier = Modifier.padding(bottom = 4.dp)
+)
+Text(
+    text = "Check-out: $checkOut",
+    style = MaterialTheme.typography.bodyMedium,
+    modifier = Modifier.padding(bottom = 4.dp)
+)
+Text(
+    text = "Guests: $guests",
+    style = MaterialTheme.typography.bodyMedium,
+    modifier = Modifier.padding(bottom = 4.dp)
+)
             Spacer(modifier = Modifier.height(24.dp))
 
             if (loading.value) {
@@ -71,7 +82,6 @@ fun HotelListScreen(
             } else if (error.value.isNotEmpty()) {
                 Text(text = error.value, color = MaterialTheme.colorScheme.error)
             } else {
-                Text("Number of retrieved hotels: ${hotels.value.size}", style = MaterialTheme.typography.bodyMedium)
 
                 HotelList(hotels = hotels.value, onHotelSelected = onHotelSelected)
 
@@ -132,10 +142,10 @@ fun HotelItem(hotel: Hotel, onClick: () -> Unit) {
             Column(modifier = Modifier
                 .padding(16.dp)
                 .weight(2f)) {
-                Text(text = hotel.name, style = MaterialTheme.typography.labelLarge, fontSize = 30.sp)
+                Text(text = hotel.name, style = MaterialTheme.typography.labelSmall, fontSize = 20.sp)
                 Text(text = "Price: \$${hotel.pricePerNight}", style = MaterialTheme.typography.bodySmall,fontSize = 20.sp)
                 Text(
-                    text = "Room: ${if (hotel.availability) "Available" else "Not Available"}",
+                    text = "Room: ${if (hotel.availability) "Not Available" else "Available"}",
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 20.sp,
                 )

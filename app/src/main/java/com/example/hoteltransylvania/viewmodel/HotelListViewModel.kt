@@ -45,6 +45,15 @@ class HotelListViewModel(application: Application) : AndroidViewModel(applicatio
                         }
                     } ?: emptyList()
                     hotels.postValue(hotelList)
+
+                    // Save the hotelList to SharedPreferences
+                    val sharedPreferences = getApplication<Application>().getSharedPreferences("HotelPrefs", Application.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    val gson = com.google.gson.Gson()
+                    val hotelListJson = gson.toJson(hotelList)
+                    editor.putString("hotelList", hotelListJson)
+                    editor.apply()
+
                 } else {
                     error.postValue("Error response: ${response.code()}")
                 }

@@ -3,7 +3,7 @@ package com.example.hoteltransylvania.service
 import com.example.hoteltransylvania.data.GraphQLRequest
 import com.example.hoteltransylvania.data.HotelResponseWrapper
 import com.example.hoteltransylvania.data.ReserveHotelResponse
-import com.example.hoteltransylvania.data.ReviewsResponse
+import com.example.hoteltransylvania.data.ReviewResponseWrapper
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -26,8 +26,9 @@ interface HotelGraphQLService {
     ): Response<ReserveHotelResponse>
 
 
+    @Headers("Content-Type: application/json")
     @POST("graphql")
-    suspend fun getReviews(@Body request: GraphQLRequest): Response<ReviewsResponse>
+    suspend fun getReviews(@Body body: Map<String, String>): Response<ReviewResponseWrapper>
 
 }
 

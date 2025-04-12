@@ -28,6 +28,7 @@ class HotelFormActivity : ComponentActivity() {
         val rooms = intent.getIntExtra("rooms", 1)
         val guests = intent.getIntExtra("guests", 1)
 
+        reviewsViewModel.fetchReviews(hotel.id,hotel.ai_summary?: "Default summary")
         setContent {
             HotelTransylvaniaTheme {
                 HotelFormScreen(
