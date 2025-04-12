@@ -5,6 +5,7 @@
 
     <!-- Internet Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -32,6 +33,16 @@
         <!-- Hotel List Activity -->
         <activity
             android:name=".HotelListActivity"
+            android:exported="false" />
+
+        <!-- Hotel Form Activity -->
+        <activity
+            android:name=".HotelFormActivity"
+            android:exported="false" />
+
+        <!-- Hotel Confirmation Activity -->
+        <activity
+            android:name=".ConfirmationActivity"
             android:exported="false" />
 
     </application>

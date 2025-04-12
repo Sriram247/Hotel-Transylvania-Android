@@ -1,6 +1,7 @@
 package com.example.hoteltransylvania
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -25,9 +26,6 @@ import com.example.hoteltransylvania.viewmodel.HotelReserveViewModelFactory
 class HotelListActivity : ComponentActivity() {
 
     private val viewModel: HotelListViewModel by viewModels()
-    private val reserveViewModel: HotelReserveViewModel by viewModels {
-        HotelReserveViewModelFactory(RetrofitInstance.apiService)
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,26 +40,6 @@ class HotelListActivity : ComponentActivity() {
 
         Log.i(TAG, "HotelListActivity - location: $location, checkIn: $checkIn, checkOut: $checkOut, rooms: $rooms, guests: $guests")
 
-        // Function to submit reservation
-        fun submitHotelDetails(hotel: Hotel, guestInfo: List<GuestInfo>) {
-            reserveViewModel.reserveHotel(
-                hotel = hotel,
-                checkIn = checkIn,
-                checkOut = checkOut,
-                rooms = rooms,
-                guests = guestInfo,
-                onSuccess = { confirmationNumber ->
-                    setContent {
-                        HotelTransylvaniaTheme {
-                            HotelConfirmationScreen(confirmationNumber = confirmationNumber)
-                        }
-                    }
-                },
-                onError = { errorMsg ->
-                    Toast.makeText(this, "Error: $errorMsg", Toast.LENGTH_SHORT).show()
-                }
-            )
-        }
 
         setContent {
             HotelTransylvaniaTheme {
@@ -72,9 +50,16 @@ class HotelListActivity : ComponentActivity() {
                     checkOut = checkOut,
                     rooms = rooms,
                     guests = guests,
-                    onHotelSelected = { hotel, guestList ->
-                        Log.i(TAG, "HotelListActivity - onHotelSelected: $hotel, $guestList")
-                        submitHotelDetails(hotel, guestList)
+                    onHotelSelected = { hotel ->
+                        Log.d("Navigation", "Navigating to HotelFormActivity")
+                        val intent = Intent(this, HotelFormActivity::class.java)
+                        intent.putExtra("hotel", hotel)
+                        intent.putExtra("location", location)
+                        intent.putExtra("checkIn", checkIn)
+                        intent.putExtra("checkOut", checkOut)
+                        intent.putExtra("rooms", rooms)
+                        intent.putExtra("guests", guests)
+                        startActivity(intent)
                     }
                 )
             }

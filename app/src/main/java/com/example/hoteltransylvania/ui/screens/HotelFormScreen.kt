@@ -7,14 +7,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.example.hoteltransylvania.data.Hotel
 import com.example.hoteltransylvania.data.GuestInfo
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import com.example.hoteltransylvania.viewmodel.HotelListViewModel
+import coil.compose.AsyncImage
+import com.example.hoteltransylvania.viewmodel.ReviewsViewModel
 
 @Composable
 fun HotelFormScreen(
@@ -25,7 +25,7 @@ fun HotelFormScreen(
     rooms: Int,
     location: String,
     onSubmit: (List<GuestInfo>) -> Unit,
-    viewModel: HotelListViewModel,
+    reviewsViewModel: ReviewsViewModel,
 ) {
     // State lists
     val guestNames = remember { List(guests) { mutableStateOf(TextFieldValue("")) } }
@@ -34,11 +34,11 @@ fun HotelFormScreen(
 
     val scrollState = rememberScrollState()
 
-    val loading by viewModel.reviewLoading.collectAsState()
-    val reviews by viewModel.reviews.collectAsState()
-    val summary by viewModel.summary.collectAsState()
-    val error by viewModel.reviewError.collectAsState()
-
+    // Collect review-related states from ReviewsViewModel
+    val loading by reviewsViewModel.reviewLoading.collectAsState()
+    val reviews by reviewsViewModel.reviews.collectAsState()
+    val summary by reviewsViewModel.summary.collectAsState()
+    val error by reviewsViewModel.reviewError.collectAsState()
 
     Column(
         modifier = Modifier
@@ -55,7 +55,7 @@ fun HotelFormScreen(
             contentDescription = hotel.name,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .aspectRatio(16f / 9f)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -74,10 +74,9 @@ fun HotelFormScreen(
 
         val showDialog = remember { mutableStateOf(false) }
 
-
         LaunchedEffect(showDialog.value) {
             if (showDialog.value) {
-                viewModel.fetchReviews(hotel.name)
+                reviewsViewModel.fetchReviews(hotel.name) // Use ReviewsViewModel here
             }
         }
 
@@ -118,7 +117,6 @@ fun HotelFormScreen(
                 }
             }
 
-
             Spacer(modifier = Modifier.height(24.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
             Spacer(modifier = Modifier.height(24.dp))
@@ -153,7 +151,6 @@ fun HotelFormScreen(
                 }
             )
         }
-
 
         Button(
             onClick = {

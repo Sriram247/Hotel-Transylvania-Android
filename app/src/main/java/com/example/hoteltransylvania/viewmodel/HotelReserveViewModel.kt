@@ -27,19 +27,18 @@ class HotelReserveViewModel(
     val error = _error.asStateFlow()
 
     fun reserveHotel(
-        hotel: Hotel,
+        hotelName: String,
+        hotelLocation: String,
         checkIn: String,
         checkOut: String,
-        rooms: Int,
-        guests: List<GuestInfo>,
         onSuccess: (String) -> Unit,
         onError: (String) -> Unit
     ) {
         val mutation = GraphQLQueries.getBookHotelMutation(
             checkInDate = checkIn,
             checkOutDate = checkOut,
-            hotelName = hotel.name,
-            location = hotel.location
+            hotelName = hotelName,
+            location = hotelLocation
         )
 
         val request = GraphQLRequest(query = mutation)

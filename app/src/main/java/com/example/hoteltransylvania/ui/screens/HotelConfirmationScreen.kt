@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.hoteltransylvania.data.GuestInfo
 
 @Composable
 fun HotelConfirmationScreen(confirmationNumber: String) {
@@ -22,3 +23,4 @@ fun HotelConfirmationScreen(confirmationNumber: String) {
         Text("RES-$confirmationNumber", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
     }
 }
+

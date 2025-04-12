@@ -1,5 +1,6 @@
 package com.example.hoteltransylvania.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,6 +31,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.hoteltransylvania.data.GuestInfo
 import com.example.hoteltransylvania.viewmodel.HotelListViewModel
 import com.example.hoteltransylvania.data.Hotel
@@ -47,7 +50,7 @@ fun HotelListScreen(
     checkOut: String,
     rooms: Int,
     guests: Int,
-    onHotelSelected: (Hotel, List<GuestInfo>) -> Unit
+    onHotelSelected: (Hotel) -> Unit
 ) {
     var selectedHotel by remember { mutableStateOf<Hotel?>(null) }
 
@@ -55,22 +58,7 @@ fun HotelListScreen(
     val loading = viewModel.loading.observeAsState(true)
     val error = viewModel.error.observeAsState("")
 
-    if (selectedHotel != null) {
-        // 👇 Show the form screen instead of the hotel list
-        HotelFormScreen(
-            hotel = selectedHotel!!,
-            guests = guests,
-            checkIn = checkIn,
-            checkOut = checkOut,
-            rooms = rooms,
-            location = location,
-            viewModel = viewModel,
-            onSubmit = { guestList ->
-                onHotelSelected(selectedHotel!!, guestList)
-            }
-        )
-
-    } else {
+    // Fetching hotel data when the screen is displayed
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Text("Check-in: $checkIn", style = MaterialTheme.typography.bodyMedium)
             Text("Check-out: $checkOut", style = MaterialTheme.typography.bodyMedium)
@@ -85,9 +73,8 @@ fun HotelListScreen(
             } else {
                 Text("Number of retrieved hotels: ${hotels.value.size}", style = MaterialTheme.typography.bodyMedium)
 
-                HotelList(hotels = hotels.value) { hotel ->
-                    selectedHotel = hotel // 👈 Trigger rendering form
-                }
+                HotelList(hotels = hotels.value, onHotelSelected = onHotelSelected)
+
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -96,13 +83,12 @@ fun HotelListScreen(
         HotelListRequest(viewModel = viewModel)
     }
 
-}
+
 
 
 
 @Composable
-fun HotelList(hotels: List<Hotel>, onHotelSelected: (Hotel) -> Unit = {}) {
-
+fun HotelList(hotels: List<Hotel>, onHotelSelected: (Hotel) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(hotels) { hotel ->
             HotelItem(hotel = hotel, onClick = { onHotelSelected(hotel) })
@@ -127,6 +113,7 @@ fun HotelItem(hotel: Hotel, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically){
+            Log.d("HotelImage", "Image URL: ${hotel.imageUrl}")
             // Hotel Image
             AsyncImage(
                 model = hotel.imageUrl,
@@ -134,8 +121,12 @@ fun HotelItem(hotel: Hotel, onClick: () -> Unit) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .weight(1f)
-                    .height(180.dp)
+                    .height(180.dp),
+                onError = {
+                    Log.e("CoilError", "Image failed to load: ${hotel.imageUrl}" + it.result.throwable)
+                }
             )
+
 
             // Hotel Info
             Column(modifier = Modifier

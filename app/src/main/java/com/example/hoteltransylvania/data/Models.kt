@@ -1,4 +1,6 @@
 package com.example.hoteltransylvania.data
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 data class GraphQLRequest(
     val query: String,
@@ -13,21 +15,23 @@ data class HotelResponseData(
     val getAllHotels: List<Hotel>
 )
 
+@Parcelize
 data class Hotel(
     val id: Int,
     val name: String,
-    val location: String,
-    val imageUrl: String,
-    val rating: Double,
-    val pricePerNight: Double,
+    val location: String?,
+    val imageUrl: String = "https://www.shutterstock.com/image-photo/mysterious-eerie-ambience-inside-motel-600nw-2454376659.jpg",
+    val rating: Double?,
+    val pricePerNight: Double?,
     val availability: Boolean
-)
+) : Parcelable
 
+
+@Parcelize
 data class GuestInfo(
     val name: String,
     val gender: String
-)
-
+) : Parcelable
 
 
 data class ReserveHotelResponse(
