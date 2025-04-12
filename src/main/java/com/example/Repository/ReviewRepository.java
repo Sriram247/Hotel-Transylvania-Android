@@ -1,9 +1,11 @@
 package com.example.repository;
 
+import com.example.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.entity.*;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {}
+import java.util.List;
 
+public interface ReviewRepository extends JpaRepository<Review, Integer> {
+    List<Review> findByHotelId(Long hotelId);
+
+}

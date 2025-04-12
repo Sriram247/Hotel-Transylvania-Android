@@ -1,11 +1,12 @@
 type Hotel {
     id: ID!
     name: String!
-    location: String!
-    rating: String!
+    location: String
+    rating: String
     isAvailable: Boolean
     imageUrl: String
-    pricePerNight: Int!
+    pricePerNight: Int
+    ai_summary: String
 }
 
 input HotelInput {
@@ -21,10 +22,9 @@ type Guest {
 }
 
 type Review {
-    id: ID!
-    rating: String!
-    comment: String!
-    hotel: Hotel!
+    id: ID
+    hotelId: ID!
+    comment: String
 }
 
 type Reservation {
@@ -34,6 +34,7 @@ type Reservation {
     checkInDate: String!
     checkOutDate: String!
 }
+
 
 type Query {
     getHotelById(id: ID!): Hotel
@@ -47,6 +48,8 @@ type Query {
 
     getReservationById(id: ID!): Reservation
     getAllReservations: [Reservation]
+
+    getReviewsByHotelId(hotelId: ID!): [Review]
 }
 
 
@@ -60,16 +63,17 @@ type Mutation {
         imageUrl: String
     ): Hotel
 
+    updateHotelAi(
+        id: ID!,
+        ai_summary: String
+    ): Hotel
+
     addGuest(
         firstName: String!, 
         gender: String!
     ): Guest
 
-    addReview(
-        rating: String!, 
-        comment: String!, 
-        hotel: HotelInput!
-    ): Review
+    addReview(hotelId: ID!, comment: String!): Review
 
     addReservation(
         hotelName: String!

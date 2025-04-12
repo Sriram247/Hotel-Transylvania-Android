@@ -16,6 +16,21 @@ public class Hotel {
     private String imageUrl;
     private Integer pricePerNight;
     private Boolean isAvailable = true;
+    private String ai_summary;
+
+    /**
+     * @return the ai_summary
+     */
+    public String getAi_summary() {
+        return ai_summary;
+    }
+
+    /**
+     * @param ai_summary the ai_summary to set
+     */
+    public void setAi_summary(String ai_summary) {
+        this.ai_summary = ai_summary;
+    }
 
     public Hotel() {}
 

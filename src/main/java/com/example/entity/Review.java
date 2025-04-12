@@ -4,17 +4,44 @@ import jakarta.persistence.*;
 
 @Entity
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private int rating;
+    private int id;
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    private Long hotelId;
+
     private String comment;
 
-    @ManyToOne
-    @JoinColumn(name = "guest_id")
-    private Guest guest;
+    public Review() {} // Empty constructor
 
-    @ManyToOne
-    @JoinColumn(name = "hotel_id")
-    private Hotel hotel;
+    public Review(Long hotelId, String comment) {
+        this.hotelId = hotelId;
+        this.comment = comment;
+    }
+
+    // Getters and setters
+
+    public Long getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Long hotelId) {
+        this.hotelId = hotelId;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 }

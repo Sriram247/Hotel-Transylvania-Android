@@ -34,8 +34,23 @@ public class HotelController {
             @Argument String contactNumber,
             @Argument String imageUrl,
             @Argument Integer pricePerNight,
-            @Argument Boolean isAvailable) {
+            @Argument Boolean isAvailable
+            ) {
         Hotel newHotel = new Hotel(name, location, rating , imageUrl, pricePerNight, isAvailable);
         return hotelService.save(newHotel);
     }
+
+    @MutationMapping
+    public Hotel updateHotelAi(
+            @Argument Integer id,
+            @Argument String ai_summary) {
+        Optional<Hotel> hotelOptional = hotelService.findById(id);
+        if (hotelOptional.isPresent()) {
+            Hotel hotel = hotelOptional.get();
+            hotel.setAi_summary(ai_summary);
+            return hotelService.save(hotel);
+        } else {
+            throw new RuntimeException("Hotel not found with id: " + id);
+        }
+}
 }

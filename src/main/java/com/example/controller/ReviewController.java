@@ -1,30 +1,46 @@
 package com.example.controller;
 
+import com.example.entity.Review;
+import com.example.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import com.example.service.*;
-import com.example.entity.*;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
+
 import java.util.List;
-import java.util.Optional;
 
-@RestController
-@RequestMapping("/reviews")
+@Controller
 public class ReviewController {
+
     @Autowired
-    private ReviewService reviewService;
+    private ReviewRepository reviewRepository;
 
-    @GetMapping
-    public List<Review> findAll() {
-        return reviewService.findAll();
+    @MutationMapping
+    public Review addReview(@Argument Long hotelId, @Argument String comment) {
+        Review review = new Review(hotelId, comment);
+        return reviewRepository.save(review);
+    }
+    @QueryMapping
+    public List<Review> getAllReviews() {
+        return reviewRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public Optional<Review> findById(@PathVariable Long id) {
-        return reviewService.findById(id);
+    @QueryMapping
+    public List<Review> getReviewsByHotelId(@Argument Long hotelId) {
+        List<Review> reviews = reviewRepository.findByHotelId(hotelId);
+        if (reviews.isEmpty()) return null;
+        else return reviews;
+
     }
 
-    @PostMapping
-    public Review save(@RequestBody Review review) {
-        return reviewService.save(review);
-    }
+/*     private String generateAISummary(List<String> reviews) {
+        if (reviews.isEmpty()) return "No reviews available.";
+        if (reviews.size() == 1) return reviews.get(0);
+
+        return "Guests generally had " +
+                (reviews.stream().anyMatch(r -> r.toLowerCase().contains("bad") || r.toLowerCase().contains("poor"))
+                        ? "mixed experiences."
+                        : "positive experiences.");
+    } */
 }
