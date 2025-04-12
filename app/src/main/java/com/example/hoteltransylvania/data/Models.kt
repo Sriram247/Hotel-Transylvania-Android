@@ -42,3 +42,15 @@ data class Reservation(
     val id: String
 )
 
+
+//reviews
+data class ReviewsResponse(
+    val data: ReviewData
+)
+
+data class ReviewData(
+    val reviews: List<String>,
+    val summary: String
+)
+
+

@@ -35,4 +35,16 @@ object GraphQLQueries {
             }
         """.trimIndent()
     }
+
+    fun getReviewsQuery(hotelName: String): String {
+        return """
+        query {
+            reviews(hotelName: "$hotelName") {
+                texts
+                ai_summary
+            }
+        }
+    """.trimIndent()
+    }
+
 }

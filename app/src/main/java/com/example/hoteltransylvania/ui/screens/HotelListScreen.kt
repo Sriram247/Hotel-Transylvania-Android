@@ -64,6 +64,7 @@ fun HotelListScreen(
             checkOut = checkOut,
             rooms = rooms,
             location = location,
+            viewModel = viewModel,
             onSubmit = { guestList ->
                 onHotelSelected(selectedHotel!!, guestList)
             }

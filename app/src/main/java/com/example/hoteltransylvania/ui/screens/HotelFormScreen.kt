@@ -13,6 +13,8 @@ import com.example.hoteltransylvania.data.GuestInfo
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import com.example.hoteltransylvania.viewmodel.HotelListViewModel
 
 @Composable
 fun HotelFormScreen(
@@ -22,7 +24,8 @@ fun HotelFormScreen(
     checkOut: String,
     rooms: Int,
     location: String,
-    onSubmit: (List<GuestInfo>) -> Unit
+    onSubmit: (List<GuestInfo>) -> Unit,
+    viewModel: HotelListViewModel,
 ) {
     // State lists
     val guestNames = remember { List(guests) { mutableStateOf(TextFieldValue("")) } }
@@ -30,6 +33,12 @@ fun HotelFormScreen(
     val genderOptions = listOf("Male", "Female", "Other")
 
     val scrollState = rememberScrollState()
+
+    val loading by viewModel.reviewLoading.collectAsState()
+    val reviews by viewModel.reviews.collectAsState()
+    val summary by viewModel.summary.collectAsState()
+    val error by viewModel.reviewError.collectAsState()
+
 
     Column(
         modifier = Modifier
@@ -58,6 +67,23 @@ fun HotelFormScreen(
         Text("Rooms: $rooms")
         Text("Guests: $guests")
         Text("Price/Night: \$${hotel.pricePerNight}")
+
+        Spacer(modifier = Modifier.height(24.dp))
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        val showDialog = remember { mutableStateOf(false) }
+
+
+        LaunchedEffect(showDialog.value) {
+            if (showDialog.value) {
+                viewModel.fetchReviews(hotel.name)
+            }
+        }
+
+        TextButton(onClick = { showDialog.value = true }) {
+            Text("Reviews")
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
         HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
@@ -100,6 +126,33 @@ fun HotelFormScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        if (showDialog.value) {
+            AlertDialog(
+                onDismissRequest = { showDialog.value = false },
+                confirmButton = {
+                    TextButton(onClick = { showDialog.value = false }) {
+                        Text("Close")
+                    }
+                },
+                title = { Text("Hotel Reviews") },
+                text = {
+                    if (loading) {
+                        Text("Loading...")
+                    } else if (error != null) {
+                        Text("Error: $error")
+                    } else {
+                        Column {
+                            Text("Summary: ${summary}")
+                            Spacer(modifier = Modifier.height(8.dp))
+                            reviews.forEach { review ->
+                                Text("• $review")
+                                Spacer(modifier = Modifier.height(4.dp))
+                            }
+                        }
+                    }
+                }
+            )
+        }
 
 
         Button(
